@@ -9,6 +9,7 @@ namespace Khach155.Models.BangMainViewModel
 
         public decimal GiaCa { get; set; }
         public bool Cancel { get; set; }
+        public int UserId { get; set; }
 
         public static implicit operator BangMainCRUDViewModels(BangMain _bangMain)
         {

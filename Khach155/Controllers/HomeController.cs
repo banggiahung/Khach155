@@ -12,165 +12,270 @@ using static Azure.Core.HttpHeader;
 
 namespace Khach155.Controllers
 {
-	public class HomeController : Controller
-	{
-		private readonly ILogger<HomeController> _logger;
-		private readonly ApplicationDbContext _context;
-		private readonly ICommon _iCommon;
+    public class HomeController : Controller
+    {
+        private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
+        private readonly ICommon _iCommon;
 
 
-		public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, ICommon common)
-		{
-			_logger = logger;
-			_context = context;
-			_iCommon = common;
-		}
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, ICommon common)
+        {
+            _logger = logger;
+            _context = context;
+            _iCommon = common;
+        }
 
-		public IActionResult Index()
-		{
-			if (HttpContext.Session.GetInt32("Id") == null)
-			{
-				return RedirectToAction("Login", "Home");
-			}
+        public IActionResult Index()
+        {
+            if (HttpContext.Session.GetInt32("Id") == null)
+            {
+                return RedirectToAction("Login", "Home");
+            }
 
-			return View();
-		}
-		[HttpGet]
-		public IActionResult GetDataBangMain()
-		{
-			var a = _context.BangMain.ToList();
-			return Ok(a);
-		}
-		public IActionResult Login()
-		{
-			if (HttpContext.Session.GetInt32("Id") != null)
-			{
-				return RedirectToAction("Index", "Home");
-			}
+            return View();
+        }
+        [HttpGet]
+        public IActionResult GetDataBangMain()
+        {
+            var a = _context.BangMain.ToList();
+            return Ok(a);
+        }
+        public IActionResult Login()
+        {
+            if (HttpContext.Session.GetInt32("Id") != null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
-			else
-			{
-				return View();
+            else
+            {
+                return View();
 
-			}
-		}
-		[HttpPost]
-		public async Task<IActionResult> Login(DataUserCRUDViewModels model)
-		{
-			var user = await _context.DataUser.SingleOrDefaultAsync(u => u.UserName == model.UserName);
-			model.Password = _iCommon.GetMD5(model.Password);
-			if (user != null && user.Password == model.Password)
-			{
-				// Đăng nhập thành công
-				HttpContext.Session.SetInt32("Id", user.Id ?? 0);
-				//HttpContext.Session.SetString("UserRole", user.Role);
-				return RedirectToAction("Index", "Home");
-			}
-			else
-			{
-				ViewBag.Login = "Sai tài khoản hoặc mật khẩu";
-				// Không đăng nhập được
-				ModelState.AddModelError("", "Lỗi");
-				return View(model);
-			}
-		}
-		public IActionResult Logout()
-		{
-			Response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate");
-			Response.Headers.Add("Pragma", "no-cache");
-			Response.Headers.Add("Expires", "0");
-			HttpContext.Session.Clear();
-			return RedirectToAction("Login");
-		}
-		public IActionResult Privacy()
-		{
-			return View();
-		}
-		[HttpGet]
-		public async Task<IActionResult> MuaFb(int id)
-		{
-			BangMainCRUDViewModels vm = new BangMainCRUDViewModels();
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> Login(DataUserCRUDViewModels model)
+        {
+            var user = await _context.DataUser.SingleOrDefaultAsync(u => u.UserName == model.UserName);
+            model.Password = _iCommon.GetMD5(model.Password);
+            if (user != null && user.Password == model.Password)
+            {
+                // Đăng nhập thành công
+                HttpContext.Session.SetInt32("Id", user.Id ?? 0);
+                //HttpContext.Session.SetString("UserRole", user.Role);
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ViewBag.Login = "Sai tài khoản hoặc mật khẩu";
+                // Không đăng nhập được
+                ModelState.AddModelError("", "Lỗi");
+                return View(model);
+            }
+        }
+        public IActionResult Logout()
+        {
+            Response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate");
+            Response.Headers.Add("Pragma", "no-cache");
+            Response.Headers.Add("Expires", "0");
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login");
+        }
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+        [HttpGet]
+        public async Task<IActionResult> MuaFb(int id)
+        {
+            BangMainCRUDViewModels vm = new BangMainCRUDViewModels();
 
-			if (id > 0)
-			{
-				try
-				{
-					vm = await _context.BangMain.Where(x => x.Id == id).FirstOrDefaultAsync()?? new BangMain();
-					if (vm == null)
-					{
-						return BadRequest("Không tìm thấy đối tượng với ID tương ứng");
-					}
-				}
-				catch (Exception ex)
-				{
-					return BadRequest(ex.Message);
-				}
+            if (id > 0)
+            {
+                try
+                {
+                    vm = await _context.BangMain.Where(x => x.Id == id).FirstOrDefaultAsync() ?? new BangMain();
+                    if (vm == null)
+                    {
+                        return BadRequest("Không tìm thấy đối tượng với ID tương ứng");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
 
-			}
-			else
-			{
-				return NotFound();
-			}
+            }
+            else
+            {
+                return NotFound();
+            }
 
 
-			return Ok(vm);
-		}
-		[HttpPost]
-		public async Task<IActionResult> MuaFb([FromForm] BangMainCRUDViewModels data)
-		{
-			try
-			{
+            return Ok(vm);
+        }
+        [HttpPost]
+        public async Task<IActionResult> MuaFb([FromForm] BangMainCRUDViewModels data)
+        {
+            try
+            {
                 int? userId = HttpContext.Session.GetInt32("Id");
 
                 DataUser userData = await _context.DataUser.FindAsync(userId);
-				if (userData == null || data.Id < 0)
-				{
-					return NotFound("Invalid user or data");
-				}
+                if (userData == null || data.Id < 0)
+                {
+                    return NotFound("Invalid user or data");
+                }
 
-				BangMain main = await _context.BangMain.FindAsync(data.Id);
-				if (main == null)
-				{
-					return NotFound("Invalid main");
-				}
+                BangMain main = await _context.BangMain.FindAsync(data.Id);
+                if (main == null)
+                {
+                    return NotFound("Invalid main");
+                }
 
-				LuuTruMua luuMain = new();
-				luuMain.UserId = userId;
-				luuMain.GiaMua = main.GiaCa;
-				luuMain.MuonBan = false;
-				luuMain.MuaCuaAi = main.NguoiBan;
+                LuuTruMua luuMain = new();
+                luuMain.UserId = userId;
+                luuMain.GiaMua = main.GiaCa;
+                luuMain.MuonBan = false;
+                luuMain.MuaCuaAi = main.NguoiBan;
 
-				_context.Add(luuMain);
-				await _context.SaveChangesAsync();
+                _context.Add(luuMain);
+                await _context.SaveChangesAsync();
 
-				main.Cancel = true;
-				_context.Update(main);
-				await _context.SaveChangesAsync();
+                main.Cancel = true;
+                _context.Update(main);
+                await _context.SaveChangesAsync();
 
-				if (main.Cancel == true)
-				{
-					_context.BangMain.Remove(main);
-					await _context.SaveChangesAsync();
-				}
-				else
-				{
-					return NotFound("Main is not cancelled");
-				}
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, ex.Message);
-			}
+                if (main.Cancel == true)
+                {
+                    _context.BangMain.Remove(main);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return NotFound("Main is not cancelled");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
 
-			return Ok(data);
-		}
+            return Ok(data);
+        }
+
+        [HttpGet]
+        public IActionResult Profile()
+        {
+            return View();
+        }
+        // lấy ra ra bảng để bán
+        [HttpGet]
+        public IActionResult GetDataProfileMain()
+        {
+            var a = from obj in _context.LuuTruMua
+                    join _user in _context.DataUser on obj.UserId equals _user.Id
+                    where obj.MuonBan == false
+                    select new LuuTruMuaCRUDViewModels
+                    {
+                        Id = obj.Id,
+                        UserId = obj.UserId,
+                        GiaMua = obj.GiaMua,
+                        MuonBan = obj.MuonBan,
+                        MuaCuaAi = obj.MuaCuaAi,
+                        TenUser = _user.UserName
+                    };
+            return Ok(a.ToList());
+        }
+
+        // lấy ra id của lưu trữ mua
+        [HttpGet]
+        public async Task<IActionResult> BanFb(int id)
+        {
+            LuuTruMuaCRUDViewModels vm = new LuuTruMuaCRUDViewModels();
+
+            if (id > 0)
+            {
+                try
+                {
+                    vm = await _context.LuuTruMua.Where(x => x.Id == id).FirstOrDefaultAsync() ?? new LuuTruMua();
+                    if (vm == null)
+                    {
+                        return BadRequest("Không tìm thấy đối tượng với ID tương ứng");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+
+            }
+            else
+            {
+                return NotFound();
+            }
 
 
+            return Ok(vm);
+        }
+        // post vào bảng chính để đăng mua
 
-		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-		public IActionResult Error()
-		{
-			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-		}
-	}
+        [HttpPost]
+        public async Task<IActionResult> BanFb([FromForm] LuuTruMuaCRUDViewModels data)
+        {
+            try
+            {
+                int? userId = HttpContext.Session.GetInt32("Id");
+                DataUser userData = await _context.DataUser.FindAsync(userId);
+                if (userData == null || data.Id < 0)
+                {
+                    return NotFound("Invalid user or data");
+                }
+
+                LuuTruMua main = await _context.LuuTruMua.FindAsync(data.Id);
+                if (main == null)
+                {
+                    return NotFound("Invalid main");
+                }
+
+                BangMain pushMain = new();
+                pushMain.NguoiBan = userData.UserName;
+                pushMain.GiaCa = data.GiaMua;
+                pushMain.UserId = userId;
+                pushMain.Cancel = false;
+               
+
+                _context.Add(pushMain);
+                await _context.SaveChangesAsync();
+
+                main.MuonBan = true;
+                _context.Update(main);
+                await _context.SaveChangesAsync();
+
+                if (main.MuonBan == true)
+                {
+                    _context.LuuTruMua.Remove(main);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return NotFound("Main is not cancelled");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+            return Ok(data);
+        }
+
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+    }
 }

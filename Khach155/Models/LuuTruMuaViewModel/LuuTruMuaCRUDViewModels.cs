@@ -10,6 +10,8 @@ namespace Khach155.Models.LuuTruMuaViewModel
         public decimal GiaMua { get; set; }
         public bool MuonBan { get; set; }
         public string MuaCuaAi { get; set; }
+        public string TenUser { get; set; }
+        
 
         public static implicit operator LuuTruMuaCRUDViewModels(LuuTruMua _luuTru)
         {
