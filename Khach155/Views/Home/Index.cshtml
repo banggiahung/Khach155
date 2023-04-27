@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div id="Vue_BangMain">
+    <table id="GetData" class="table table-bordered text-center">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>NguoiBan</th>
+                <th>GiaCa</th>
+                <th>Cancel</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="item in DataUser" :key="item.id">
+                <td>{{ item.id}}</td>
+                <td>{{ item.nguoiBan}}</td>
+                <td>{{ item.giaCa}}</td>
+                <td>{{ item.cancel}}</td>
+                    <td>
+                        <button class="btn-danger">Bán</button>
+                    </td>
+                    <td>
+                    <button class="btn-success" v-on:click="getItem(item.id)">Mua</button>
+
+                    </td>
+                </tr>
+            
+
+        </tbody>
+    </table>
+</div>
+<a href="~/Home/Logout" class="btn btn-danger">Đăng xuất</a>
+
+<script src="~/js/bangmain_vuejs/bangmain_crud.js"></script>
