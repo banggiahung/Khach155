@@ -29,31 +29,31 @@
     </button>
 </div>
 
+<div class="container">
+    <marquee onmouseover="this.stop()" onmouseout="this.start()" scrollamount="5">Thông báo: Nội dung chạy ngang</marquee>
+</div>
+
 <div class="container mt-3">
+    <h4 class="text-center">BẢNG GIÁ TÀI KHOẢN FACEBOOK</h4>
     <div id="Vue_BangMain">
-        <table id="GetData" class="table table-bordered text-center">
-            <thead>
+        <table id="GetData" class="table table-hover table-bordered text-center">
+            <thead class="bg-secondary text-light">
                 <tr>
-                    <th>Id</th>
-                    <th>NguoiBan</th>
-                    <th>GiaCa</th>
-                    <th>Cancel</th>
+                    <th>Người bán</th>
+                    <th>Giá cả</th>
                     <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="item in DataUser" :key="item.id">
-                    <td>{{ item.id }}</td>
                     <td>{{ item.nguoiBan }}</td>
                     <td>{{ item.giaCa }}</td>
-                    <td>{{ item.cancel }}</td>
                     <td>
-                        <button class="btn-danger">Bán</button>
+                        <button class="btn btn-success" v-on:click="getItem(item.id)">Mua</button>
                     </td>
                     <td>
-                        <button class="btn-success" v-on:click="getItem(item.id)">Mua</button>
-
+                        <button class="btn btn-danger">Bán</button>
                     </td>
                 </tr>
             </tbody>

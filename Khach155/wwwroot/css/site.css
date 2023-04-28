@@ -28,3 +28,15 @@ body {
 .w-67 {
     width: 67% !important;
 }
+
+.pb-23rem {
+    padding-bottom: 23rem;
+}
+
+.line-height-20 {
+    line-height: 20px;
+}
+
+.z-index-99 {
+    z-index: 99;
+}

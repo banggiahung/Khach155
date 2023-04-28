@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Khach155</title>
-    <link rel="style`eet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Khach155.styles.css" asp-append-version="true" />
 
@@ -23,34 +22,83 @@
 </head>
 
 <body>
+
     <header>
         <div class="bg-dark">
             <a class="d-flex justify-content-center" href="~/Home/Index"><img class="w-5" src="~/upload/tungmap-1.png" /></a>
         </div>
-        <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+
+        <nav id="nav-menu" class="navbar navbar-expand-lg navbar-light bg-dark">
             <div class="container-fluid text-center">
-                <a id="menu-btn" class="text-light nav-link" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
-                    <i class="fa-solid fa-bars"></i> Menu
-                </a>
                 <div class="collapse navbar-collapse justify-content-center" id="navbarNavAltMarkup">
                     <div class="navbar-nav">
-                        <a class="text-light nav-link active" aria-current="page" href="~/Home/Index">Trang chủ</a>
+                        <a class="text-light nav-link" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
+                            <i class="fa-solid fa-bars"></i> Menu
+                        </a>
+                        <a class="text-light nav-link ms-5 active" aria-current="page" href="~/Home/Index">Trang chủ</a>
                         <a class="text-light nav-link ms-5 me-5" href="~/Home/Login">Đăng nhập</a>
                         <a class="text-light nav-link" href="#">Đăng ký</a>
                     </div>
                 </div>
             </div>
         </nav>
+
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+            <div class="offcanvas-header">
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="mt-3">
+                    <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                        <li class="nav-item">
+                            <a class="text-dark nav-link active" aria-current="page" href="~/Home/Index">Trang chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="text-dark nav-link" href="~/Home/Recharge">Nạp tiền</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="text-dark nav-link" href="~/Home/Withdraw">Rút tiền</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="text-dark nav-link" href="~/Home/Support">Hỗ trợ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="text-dark nav-link" href="~/Home/Logout">Đăng xuất</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
     </header>
 
-    <main role="main" class="pb-3">
+    <main role="main" class="pb-23rem">
         @RenderBody()
     </main>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer mt-5 bg-dark">
         <div class="container">
-            &copy; 2023 - Khach155 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row">
+                <div class="col-4 text-center"><a href="~/Home/Index"><img class="w-50" src="~/upload/tungmap-1.png" /></a></div>
+                <div class="col-4 text-light">
+                    <h5 class="mb-4 mt-3">THÔNG TIN LIÊN HỆ</h5>
+                    <p class="line-height-20">Địa chỉ: Lô 39 mb2125 Thanh Hóa</p>
+                    <p class="line-height-20">Số điện thoại: 0888.7070.93</p>
+                    <p class="line-height-20">Gmail: tungmapstore@gmail.com</p>
+                </div>
+                <div class="col-4 d-flex align-items-center">
+                    <form class="d-flex w-100">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </form>
+                </div>
+            </div>
         </div>
+        <p class="text-light text-center bg-secondary m-0">&copy; 2023 - Khach155 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></p>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -59,7 +107,6 @@
     <script src="~/font-awesome/js/all.min.js"></script>
     <script src="~/datatables/datatables.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

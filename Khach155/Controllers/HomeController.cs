@@ -176,5 +176,20 @@ namespace Khach155.Controllers
 		{
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 		}
-	}
+
+		public IActionResult Support()
+		{
+			return View();
+		}
+		
+		public IActionResult Recharge()
+		{
+			return View();
+		}
+		
+		public IActionResult Withdraw()
+		{
+			return View();
+		}
+    }
 }

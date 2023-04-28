@@ -1,50 +1,132 @@
 ﻿@model Khach155.Models.DataUserViewModel.DataUserCRUDViewModels
 @{
-	ViewData["Title"] = "Đăng nhập thành viên";
+    ViewData["Title"] = "Đăng nhập thành viên";
+    Layout = null;
 }
-<form class="login100-form validate-form" asp-controller="Home" asp-action="Login" method="post">
-	<span class="login100-form-title">
-		Đăng nhập thành viên
-	</span>
-	<span class="text-danger text-center">@ViewBag.Login</span>
-	@*data-validate="Valid email is required: ex@abc.xyz"
-	data-validate="Password is required"*@
-	<div class="wrap-input100 validate-input">
-		<input class="input100" type="text" name="UserName" placeholder="Email" asp-for="UserName" id="NameUser">
-		<span class="focus-input100"></span>
-		<span class="symbol-input100">
-			<i class="fa fa-envelope" aria-hidden="true"></i>
-		</span>
-	</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Khach155</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Khach155.styles.css" asp-append-version="true" />
 
-	<div class="wrap-input100 validate-input">
-		<input class="input100" type="password" name="Password" asp-for="Password" id="Password" placeholder="Password">
-		<span class="focus-input100"></span>
-		<span class="symbol-input100">
-			<i class="fa fa-lock" aria-hidden="true"></i>
-		</span>
-	</div>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
 
-	<div class="container-login100-form-btn">
-		<button class="login100-form-btn" type="submit">
-			Đăng nhập
-		</button>
-	</div>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/font-awesome/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-	<div class="text-center p-t-12">
-		<span class="txt1">
-			Quên mật khẩu
-		</span>
-		<a class="txt2" href="#">
-			Username / Password?
-		</a>
-	</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
-	<div class="text-center p-t-136">
-		<a class="txt2" href="~/Home/Register">
-			Tạo tài khoản mới
-			<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-		</a>
-	</div>
-</form>
+    <link href="~/datatables/datatables.css" rel="stylesheet" />
+    <link href="~/datatables/datatables.min.css" rel="stylesheet" />
+</head>
 
+<body>
+
+    <form class="login100-form validate-form" asp-controller="Home" asp-action="Login" method="post">
+        <span class="login100-form-title">
+            Đăng nhập thành viên
+        </span>
+        <span class="text-danger text-center">@ViewBag.Login</span>
+        @*data-validate="Valid email is required: ex@abc.xyz"
+        data-validate="Password is required"*@
+        <div class="wrap-input100 validate-input">
+            <input class="input100" type="text" name="UserName" placeholder="Email" asp-for="UserName" id="NameUser">
+            <span class="focus-input100"></span>
+            <span class="symbol-input100">
+                <i class="fa fa-envelope" aria-hidden="true"></i>
+            </span>
+        </div>
+
+        <div class="wrap-input100 validate-input">
+            <input class="input100" type="password" name="Password" asp-for="Password" id="Password" placeholder="Password">
+            <span class="focus-input100"></span>
+            <span class="symbol-input100">
+                <i class="fa fa-lock" aria-hidden="true"></i>
+            </span>
+        </div>
+
+        <div class="container-login100-form-btn">
+            <button class="login100-form-btn" type="submit">
+                Đăng nhập
+            </button>
+        </div>
+
+        <div class="text-center p-t-12">
+            <span class="txt1">
+                Quên mật khẩu
+            </span>
+            <a class="txt2" href="#">
+                Username / Password?
+            </a>
+        </div>
+
+        <div class="text-center p-t-136">
+            <a class="txt2" href="~/Home/Register">
+                Tạo tài khoản mới
+                <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+            </a>
+        </div>
+    </form>
+
+    <section class="vh-100" style="background-color: #508bfc;">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card shadow-2-strong" style="border-radius: 1rem;">
+                        <div class="card-body p-5 text-center">
+
+                            <h3 class="mb-5">Đăng nhập thành viên</h3>
+
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="typeEmailX-2">User name</label>
+                                <input type="email" id="typeEmailX-2" class="form-control form-control-lg" />
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="typePasswordX-2">Password</label>
+                                <input type="password" id="typePasswordX-2" class="form-control form-control-lg" />
+                            </div>
+
+                            <!-- Checkbox -->
+
+                            <button class="btn btn-primary btn-lg btn-block" type="submit">Đăng nhập</button>
+
+                            <hr class="my-4">
+
+                            <div class="text-center p-t-12">
+                                <span class="txt1">
+                                    Quên mật khẩu
+                                </span>
+                                <a class="txt2" href="#">
+                                    Username / Password?
+                                </a>
+                            </div>
+
+                            <div class="text-center p-t-136">
+                                <a class="txt2" href="~/Home/Register">
+                                    Tạo tài khoản mới
+                                    <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="~/datatables/datatables.js"></script>
+    <script src="~/font-awesome/js/all.min.js"></script>
+    <script src="~/datatables/datatables.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
