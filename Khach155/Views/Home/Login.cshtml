@@ -28,14 +28,14 @@
 
 <body>
 
-    <form class="login100-form validate-form" asp-controller="Home" asp-action="Login" method="post">
+    @*<form class="login100-form validate-form" asp-controller="Home" asp-action="Login" method="post">
         <span class="login100-form-title">
             Đăng nhập thành viên
         </span>
-        <span class="text-danger text-center">@ViewBag.Login</span>
+        <span class="text-danger text-center">@ViewBag.Login</span>*@
         @*data-validate="Valid email is required: ex@abc.xyz"
         data-validate="Password is required"*@
-        <div class="wrap-input100 validate-input">
+        @*<div class="wrap-input100 validate-input">
             <input class="input100" type="text" name="UserName" placeholder="Email" asp-for="UserName" id="NameUser">
             <span class="focus-input100"></span>
             <span class="symbol-input100">
@@ -72,33 +72,28 @@
                 <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
             </a>
         </div>
-    </form>
+    </form>*@
 
     <section class="vh-100" style="background-color: #508bfc;">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                    <div class="card shadow-2-strong" style="border-radius: 1rem;">
-                        <div class="card-body p-5 text-center">
-
-                            <h3 class="mb-5">Đăng nhập thành viên</h3>
-
+                    <form class="card shadow-2-strong" style="border-radius: 1rem;" asp-controller="Home" asp-action="Login" method="post">
+                        <div class="card-body p-5">
+                            <h3 class="mb-5 text-center">Đăng nhập thành viên</h3>
                             <div class="form-outline mb-4">
-                                <label class="form-label" for="typeEmailX-2">User name</label>
-                                <input type="email" id="typeEmailX-2" class="form-control form-control-lg" />
+                                <label class="form-label">Username</label>
+                                <input type="text" name="UserName" placeholder="Username" asp-for="UserName" id="NameUser" class="form-control form-control-lg" />
                             </div>
 
                             <div class="form-outline mb-4">
-                                <label class="form-label" for="typePasswordX-2">Password</label>
-                                <input type="password" id="typePasswordX-2" class="form-control form-control-lg" />
+                                <label class="form-label">Password</label>
+                                <input type="password" name="Password" asp-for="Password" id="Password" placeholder="Password" class="form-control form-control-lg" />
                             </div>
-
-                            <!-- Checkbox -->
-
-                            <button class="btn btn-primary btn-lg btn-block" type="submit">Đăng nhập</button>
-
+                            <div class="text-center">
+                                <button class="btn btn-primary btn-lg btn-block" type="submit">Đăng nhập</button>
+                            </div>
                             <hr class="my-4">
-
                             <div class="text-center p-t-12">
                                 <span class="txt1">
                                     Quên mật khẩu
@@ -107,15 +102,13 @@
                                     Username / Password?
                                 </a>
                             </div>
-
                             <div class="text-center p-t-136">
                                 <a class="txt2" href="~/Home/Register">
                                     Tạo tài khoản mới
-                                    <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
                                 </a>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
