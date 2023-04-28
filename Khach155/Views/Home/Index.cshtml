@@ -1,38 +1,64 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
-<div id="Vue_BangMain">
-    <table id="GetData" class="table table-bordered text-center">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>NguoiBan</th>
-                <th>GiaCa</th>
-                <th>Cancel</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="item in DataUser" :key="item.id">
-                <td>{{ item.id}}</td>
-                <td>{{ item.nguoiBan}}</td>
-                <td>{{ item.giaCa}}</td>
-                <td>{{ item.cancel}}</td>
+
+<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="https://azhomedecor.vn/wp-content/uploads/2022/11/1385x500-2.png" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+            <img src="https://azhomedecor.vn/wp-content/uploads/2022/11/1385x500-2.png" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+            <img src="https://azhomedecor.vn/wp-content/uploads/2022/11/1385x500-2.png" class="d-block w-100" alt="...">
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<div class="container mt-3">
+    <div id="Vue_BangMain">
+        <table id="GetData" class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>NguoiBan</th>
+                    <th>GiaCa</th>
+                    <th>Cancel</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in DataUser" :key="item.id">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.nguoiBan }}</td>
+                    <td>{{ item.giaCa }}</td>
+                    <td>{{ item.cancel }}</td>
                     <td>
                         <button class="btn-danger">Bán</button>
                     </td>
                     <td>
-                    <button class="btn-success" v-on:click="getItem(item.id)">Mua</button>
+                        <button class="btn-success" v-on:click="getItem(item.id)">Mua</button>
 
                     </td>
                 </tr>
-            
-
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 </div>
-<a href="~/Home/Logout" class="btn btn-danger">Đăng xuất</a>
 
 <script src="~/js/bangmain_vuejs/bangmain_crud.js"></script>

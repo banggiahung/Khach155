@@ -32,28 +32,29 @@ namespace Khach155.Controllers
 			{
 				return RedirectToAction("Login", "Home");
 			}
-
 			return View();
 		}
+
 		[HttpGet]
 		public IActionResult GetDataBangMain()
 		{
 			var a = _context.BangMain.ToList();
 			return Ok(a);
 		}
+
 		public IActionResult Login()
 		{
 			if (HttpContext.Session.GetInt32("Id") != null)
 			{
 				return RedirectToAction("Index", "Home");
 			}
-
 			else
 			{
 				return View();
 
 			}
 		}
+
 		[HttpPost]
 		public async Task<IActionResult> Login(DataUserCRUDViewModels model)
 		{
@@ -74,6 +75,7 @@ namespace Khach155.Controllers
 				return View(model);
 			}
 		}
+
 		public IActionResult Logout()
 		{
 			Response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -82,10 +84,12 @@ namespace Khach155.Controllers
 			HttpContext.Session.Clear();
 			return RedirectToAction("Login");
 		}
+
 		public IActionResult Privacy()
 		{
 			return View();
 		}
+
 		[HttpGet]
 		public async Task<IActionResult> MuaFb(int id)
 		{
@@ -115,6 +119,7 @@ namespace Khach155.Controllers
 
 			return Ok(vm);
 		}
+
 		[HttpPost]
 		public async Task<IActionResult> MuaFb([FromForm] BangMainCRUDViewModels data)
 		{
@@ -164,7 +169,6 @@ namespace Khach155.Controllers
 
 			return Ok(data);
 		}
-
 
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
