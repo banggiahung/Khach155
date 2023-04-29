@@ -192,7 +192,7 @@ namespace Khach155.Controllers
                 luuMain.MuonBan = false;
                 luuMain.MuaCuaAi = main.NguoiBan;
                 luuMain.SoLuongMua = data.SoLuongUserMua;
-
+                 
                 _context.Add(luuMain);
                 await _context.SaveChangesAsync();
 
