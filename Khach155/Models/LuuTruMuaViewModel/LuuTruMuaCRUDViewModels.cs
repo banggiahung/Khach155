@@ -11,7 +11,8 @@ namespace Khach155.Models.LuuTruMuaViewModel
         public bool MuonBan { get; set; }
         public string MuaCuaAi { get; set; }
         public string TenUser { get; set; }
-        
+        public decimal SoLuongMua { get; set; }
+
 
         public static implicit operator LuuTruMuaCRUDViewModels(LuuTruMua _luuTru)
         {
@@ -22,6 +23,7 @@ namespace Khach155.Models.LuuTruMuaViewModel
                 GiaMua = _luuTru.GiaMua,
                 MuonBan = _luuTru.MuonBan,
                 MuaCuaAi = _luuTru.MuaCuaAi,
+                SoLuongMua = _luuTru.SoLuongMua
             };
         }
 
@@ -34,6 +36,7 @@ namespace Khach155.Models.LuuTruMuaViewModel
                 GiaMua = vm.GiaMua,
                 MuonBan = vm.MuonBan,
                 MuaCuaAi = vm.MuaCuaAi,
+                SoLuongMua = vm.SoLuongMua
 
             };
         }

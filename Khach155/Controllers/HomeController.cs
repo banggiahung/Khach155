@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using static Azure.Core.HttpHeader;
 
 namespace Khach155.Controllers
@@ -38,7 +39,9 @@ namespace Khach155.Controllers
         [HttpGet]
         public IActionResult GetDataBangMain()
         {
-            var a = _context.BangMain.ToList();
+            var a = _context.BangMain
+                .Where(x=>x.SoLuongTaiKhoan > 0)
+                .ToList();
             return Ok(a);
         }
         public IActionResult Login()
@@ -73,6 +76,48 @@ namespace Khach155.Controllers
                 ModelState.AddModelError("", "Lỗi");
                 return View(model);
             }
+        }
+        // đăng ký
+        public IActionResult Register()
+        {
+            if (HttpContext.Session.GetInt32("Id") != null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(DataUserCRUDViewModels model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Kiểm tra xem UserName đã có trong cơ sở dữ liệu chưa
+                var existingUser = await _context.DataUser.FirstOrDefaultAsync(u => u.UserName == model.UserName);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("", "Tài khoản đã có");
+                    ViewBag.UserName = "Tài Khoản đã có";
+                    return View(model);
+                }
+
+                // Thêm người dùng mới vào cơ sở dữ liệu
+                model.Password = _iCommon.GetMD5(model.Password);
+                model.TienDangCo = 0;
+                model.SoDiem = 0;
+
+                _context.DataUser.Add(model);
+                await _context.SaveChangesAsync();
+
+                // Đăng nhập người dùng mới và chuyển hướng đến trang chủ
+                //HttpContext.Session.SetInt32("Id", model.Id ?? 0);
+                return RedirectToAction("Login", "Home");
+            }
+
+
+            // Hiển thị thông báo lỗi nếu dữ liệu đăng ký không hợp lệ
+            return View(model);
         }
         public IActionResult Logout()
         {
@@ -120,42 +165,47 @@ namespace Khach155.Controllers
         {
             try
             {
-                int? userId = HttpContext.Session.GetInt32("Id");
+				//int? userId = HttpContext.Session.GetInt32("Id");
+				int? userId = 1;
+                
 
-                DataUser userData = await _context.DataUser.FindAsync(userId);
-                if (userData == null || data.Id < 0)
+				DataUser userData = await _context.DataUser.FindAsync(userId);
+                if (userData == null || data.Id < 0 )
                 {
                     return NotFound("Invalid user or data");
                 }
+                
 
-                BangMain main = await _context.BangMain.FindAsync(data.Id);
+				BangMain main = await _context.BangMain.FindAsync(data.Id);
                 if (main == null)
                 {
                     return NotFound("Invalid main");
                 }
+				else if (main.UserId == userId)
+				{
+					return NotFound("Không được mua của chính mình");
 
-                LuuTruMua luuMain = new();
+				}
+				LuuTruMua luuMain = new();
                 luuMain.UserId = userId;
                 luuMain.GiaMua = main.GiaCa;
                 luuMain.MuonBan = false;
                 luuMain.MuaCuaAi = main.NguoiBan;
+                luuMain.SoLuongMua = data.SoLuongUserMua;
 
                 _context.Add(luuMain);
                 await _context.SaveChangesAsync();
 
-                main.Cancel = true;
+                main.SoLuongTaiKhoan = main.SoLuongTaiKhoan - data.SoLuongUserMua;
+                main.Cancel = false;
                 _context.Update(main);
                 await _context.SaveChangesAsync();
+               
+                userData.TienDangCo = userData.TienDangCo - luuMain.GiaMua;
+                userData.SoDiem = userData.SoDiem + luuMain.SoLuongMua;
+                _context.Update(userData);
+                await _context.SaveChangesAsync();
 
-                if (main.Cancel == true)
-                {
-                    _context.BangMain.Remove(main);
-                    await _context.SaveChangesAsync();
-                }
-                else
-                {
-                    return NotFound("Main is not cancelled");
-                }
             }
             catch (Exception ex)
             {
@@ -174,19 +224,35 @@ namespace Khach155.Controllers
         [HttpGet]
         public IActionResult GetDataProfileMain()
         {
+            int? userId = HttpContext.Session.GetInt32("Id");
+
             var a = from obj in _context.LuuTruMua
                     join _user in _context.DataUser on obj.UserId equals _user.Id
-                    where obj.MuonBan == false
+                    where obj.MuonBan == false && _user.Id == userId
                     select new LuuTruMuaCRUDViewModels
                     {
                         Id = obj.Id,
-                        UserId = obj.UserId,
+                        UserId = userId,
                         GiaMua = obj.GiaMua,
                         MuonBan = obj.MuonBan,
                         MuaCuaAi = obj.MuaCuaAi,
                         TenUser = _user.UserName
                     };
             return Ok(a.ToList());
+        }
+        [HttpGet]
+        public IActionResult GetDataProfileMainTien()
+        {
+            int? userId = HttpContext.Session.GetInt32("Id");
+
+            var a = from _user in _context.DataUser
+                    where _user.Id == userId
+                    select new DataUserCRUDViewModels
+                    {
+                        Id = userId,
+                        TienDangCo = _user.TienDangCo
+                    };
+            return Ok(a);
         }
 
         // lấy ra id của lưu trữ mua
@@ -270,8 +336,12 @@ namespace Khach155.Controllers
 
             return Ok(data);
         }
-
-
+        [HttpGet]
+        public IActionResult GetBankApi()
+        {
+            var a = _context.BankData.ToList();
+            return Ok(a);
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

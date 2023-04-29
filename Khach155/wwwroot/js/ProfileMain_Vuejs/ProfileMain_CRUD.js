@@ -2,17 +2,18 @@
     el: '#Profile_Vue',
     data: {
         DataUser: "",
-        idItems: null
+        idItems: null,
+        tienDangCo: null
 
     },
     mounted() {
-        axios.get("/Home/GetDataBangMain")
+        axios.get("/Home/GetDataProfileMain")
             .then((response) => {
                 this.DataUser = response.data;
                 return Promise.resolve();
             })
             .then(() => {
-                $("#GetData").DataTable({
+                $("#HoSoDaMua").DataTable({
                     'columnDefs': [{
                         'targets': [-1],
                         'orderable': false,
@@ -272,22 +273,39 @@
             .catch((error) => {
                 console.error(error);
             });
+        this.getDataUserId();
     },
     methods: {
-        getItem(id) {
-            axios.get(`/Home/muaFb/${id}`)
-                .then((response) => {
+        async getItem(id) {
+            axios.get(`/Home/BanFb/${id}`)
+                .then(async (response) => {
                     // Xử lý dữ liệu trả về từ API
+                    const { value: formValues1 } = await Swal.fire({
+                        title: 'Đổi mật khẩu',
+                        html:
+                            '<label> Nhập số tiền bán </label>' +
+                            '<input type="number" name="GiaMua" id="GiaMua" class="swal2-input mb-3" placeholder="Nhập số tiền">',
+
+                        focusConfirm: false,
+                        preConfirm: () => {
+                            return [
+                                document.getElementById('GiaMua').value,
+                            ]
+                        }
+                    });
+                   
                     console.log(response)
                     this.idItems = response.data.id;
                     console.log(this.idItems);
                     curentThis = this;
+                    const [GiaMua] = formValues1;
                     const formData = new FormData();
                     if (curentThis.idItems != null) {
                         formData.append('Id', curentThis.idItems);
+                        formData.append('GiaMua', GiaMua);
 
                     }
-                    axios.post('/Home/muaFb', formData, {
+                    axios.post('/Home/BanFb', formData, {
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
                         }
@@ -315,6 +333,13 @@
                 });
                 
             
+        },
+        getDataUserId() {
+            axios.get("/Home/GetDataProfileMainTien")
+                .then((response) => {
+                    this.tienDangCo = response.data[0].tienDangCo;
+                    return Promise.resolve();
+                })
         }
     },
 });

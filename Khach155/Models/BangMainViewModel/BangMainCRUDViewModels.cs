@@ -10,6 +10,10 @@ namespace Khach155.Models.BangMainViewModel
         public decimal GiaCa { get; set; }
         public bool Cancel { get; set; }
         public int UserId { get; set; }
+        public decimal SoLuongTaiKhoan { get; set; }
+
+        public decimal SoLuongUserMua { get;set; }
+
 
         public static implicit operator BangMainCRUDViewModels(BangMain _bangMain)
         {
@@ -18,7 +22,8 @@ namespace Khach155.Models.BangMainViewModel
                 Id = _bangMain.Id,
                 NguoiBan = _bangMain.NguoiBan,
                 GiaCa = _bangMain.GiaCa,
-                Cancel = _bangMain.Cancel
+                Cancel = _bangMain.Cancel,
+                SoLuongTaiKhoan = _bangMain.SoLuongTaiKhoan
             };
         }
 
@@ -29,7 +34,9 @@ namespace Khach155.Models.BangMainViewModel
                 Id = vm.Id,
                 NguoiBan = vm.NguoiBan,
                 GiaCa = vm.GiaCa,
-                Cancel = vm.Cancel
+                Cancel = vm.Cancel,
+                SoLuongTaiKhoan = vm.SoLuongTaiKhoan
+
 
             };
         }

@@ -2,7 +2,20 @@
     el: '#Vue_BangMain',
     data: {
         DataUser: "",
-        idItems: null
+        idItems: null,
+        GiaCa: null,
+        tienDangCo: null,
+        bankData: [],
+        selectedBank: null,
+        randomCode: '',
+        timer: null,
+        countdownTimer: null,
+        buttonDisabled: false,
+        waitingMessage: false,
+        soTienNap: "",
+        TokenClick: false
+
+
 
     },
     mounted() {
@@ -18,7 +31,7 @@
                         'orderable': false,
                     }],
                     searching: true,
-                    iDisplayLength: 3,
+                    iDisplayLength: 7,
                     "ordering": false,
                     lengthChange: false,
                     aaSorting: [[0, "desc"]],
@@ -272,19 +285,62 @@
             .catch((error) => {
                 console.error(error);
             });
+        this.getDataUserId();
+        this.getDataBank();
+
     },
     methods: {
+        generateRandomCode() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            const charactersLength = characters.length;
+            for (let i = 0; i < 5; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            this.randomCode = result;
+
+            // Disable the button and show the waiting message
+            this.buttonDisabled = true;
+            this.waitingMessage = true;
+            this.TokenClick = true;
+            // Start the countdown timer
+            let remainingTime = 60;
+            this.timer = setInterval(() => {
+                remainingTime--;
+                if (remainingTime === 0) {
+                    // Stop the countdown timer and re-enable the button
+                    clearInterval(this.timer);
+                    this.timer = null;
+                    this.buttonDisabled = false;
+                    this.waitingMessage = false;
+                    this.TokenClick = false;
+                    this.randomCode = '';
+                } else {
+                    this.countdownTimer = remainingTime;
+                }
+            }, 1000);
+        },
         getItem(id) {
             axios.get(`/Home/muaFb/${id}`)
                 .then((response) => {
                     // Xử lý dữ liệu trả về từ API
                     console.log(response)
                     this.idItems = response.data.id;
+                    this.GiaCa = response.data.giaCa;
                     console.log(this.idItems);
                     curentThis = this;
+                    if (curentThis.tienDangCo < curentThis.GiaCa) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Số tiền bạn đang có không đủ để mua!'
+                        });
+                        return;
+                    }
                     const formData = new FormData();
                     if (curentThis.idItems != null) {
                         formData.append('Id', curentThis.idItems);
+                        formData.append('GiaCa', curentThis.GiaCa);
 
                     }
                     axios.post('/Home/muaFb', formData, {
@@ -315,6 +371,25 @@
                 });
                 
             
-        }
+        },
+        getDataUserId() {
+            axios.get("/Home/GetDataProfileMainTien")
+                .then((response) => {
+                    this.tienDangCo = response.data[0].tienDangCo;
+                    return Promise.resolve();
+                })
+        },
+        async getDataBank() {
+            try {
+                const res = await axios.get('/Home/GetBankApi');
+                this.bankData = res.data;
+            } catch (error) {
+                console.log(error);
+            }
+        },
     },
+    beforeDestroy() {
+        clearTimeout(this.timer);
+    },
+
 });

@@ -1,8 +1,32 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿
 @{
+    ViewData["Title"] = "Hồ sơ";
+
 }
 <div id="Profile_Vue">
+    <span>
+        Tiền đang có:     {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(tienDangCo) }}
+    </span>
+    <table class="table table-bordered" id="HoSoDaMua">
+        <thead>
+            <tr>
+                <th>Tên đã mua</th>
+                <th>Giá đã mua</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="items in DataUser" :key="items.id">
+                <td>{{ items.muaCuaAi}}</td>
+                <td>
+                    {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(items.giaMua) }}
+                </td>
 
+                <td>
+                    <button v-on:click="getItem(items.id)" class="btn btn-danger">Bán</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
+<script src="~/js/profilemain_vuejs/profilemain_crud.js"></script>

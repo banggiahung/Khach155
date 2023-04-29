@@ -56,5 +56,9 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapAreaControllerRoute(
+      name: "Areas",
+      areaName: "Admin",
+      pattern: "{controller=AdminFb}/{action=Index}/{id?}");
 
 app.Run();
