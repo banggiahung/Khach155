@@ -7,5 +7,9 @@
 
         public decimal GiaCa { get; set; }
         public bool Cancel { get; set; }
+        public int? UserId { get; set; }
+        public decimal SoLuongTaiKhoan { get; set; }
+
+
     }
 }

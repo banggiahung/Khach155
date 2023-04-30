@@ -9,13 +9,13 @@
         <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
     </div>
     <div class="carousel-inner">
-        <div class="carousel-item active">
+        <div class="carousel-item active h-350px">
             <img src="https://azhomedecor.vn/wp-content/uploads/2022/11/1385x500-2.png" class="d-block w-100" alt="...">
         </div>
-        <div class="carousel-item">
+        <div class="carousel-item h-350px">
             <img src="https://azhomedecor.vn/wp-content/uploads/2022/11/1385x500-2.png" class="d-block w-100" alt="...">
         </div>
-        <div class="carousel-item">
+        <div class="carousel-item h-350px">
             <img src="https://azhomedecor.vn/wp-content/uploads/2022/11/1385x500-2.png" class="d-block w-100" alt="...">
         </div>
     </div>
@@ -36,28 +36,101 @@
 <div class="container mt-3">
     <h4 class="text-center">BẢNG GIÁ TÀI KHOẢN FACEBOOK</h4>
     <div id="Vue_BangMain">
-        <table id="GetData" class="table table-hover table-bordered text-center">
-            <thead class="bg-secondary text-light">
+        <span>
+            Tiền đang có:{{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(tienDangCo) }}
+        </span>
+        <button data-bs-toggle="modal" data-bs-target="#staticBackdrop1" type="button" class="btn btn-primary">Nạp tiền</button>
+
+        <table id="GetData" class="table table-bordered text-center">
+            <thead>
                 <tr>
-                    <th>Người bán</th>
-                    <th>Giá cả</th>
-                    <th></th>
+                    <th>Id</th>
+                    <th>Tên người bán</th>
+                    <th>Giá bán</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="item in DataUser" :key="item.id">
-                    <td>{{ item.nguoiBan }}</td>
-                    <td>{{ item.giaCa }}</td>
+                    <td>{{ item.id}}</td>
+                    <td>{{ item.nguoiBan}}</td>
                     <td>
-                        <button class="btn btn-success" v-on:click="getItem(item.id)">Mua</button>
+                        {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.giaCa) }}
                     </td>
                     <td>
-                        <button class="btn btn-danger">Bán</button>
+                        <button class="btn-success" v-on:click="getItem(item.id)">Mua</button>
+
                     </td>
                 </tr>
+
+
             </tbody>
         </table>
+        <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel1" aria-hidden="true">
+            <div class="modal-dialog  modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Nạp tiền vào tài khoản</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label">Chọn ngân hàng</label>
+                                <select class="form-select" aria-label="Default select example" v-model="selectedBank">
+                                    <option value="" disabled>Chọn ngân hàng chuyển</option>
+                                    <option v-for="(items, index) in bankData" :value="items">{{ items.bankName }}</option>
+                                </select>
+                                <div v-if="selectedBank">
+                                    <div>
+                                        <label class="form-label">Số tài khoản</label>
+                                        <input class="form-control" v-model="selectedBank.taiKhoanBank" readonly />
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Chủ tài khoản</label>
+                                        <input class="form-control" v-model="selectedBank.tenTaiKhoan" readonly />
+
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Số tiền nạp</label>
+                                        <input class="form-control" id="SoTienNap" v-model="soTienNap" :value="soTienNap" />
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-4" v-if="selectedBank">
+                                <div class="d-flex flex-column align-items-center">
+                                    <button class="btn btn-success text-center mb-2" v-on:click="generateRandomCode" :disabled="buttonDisabled">Tạo code</button>
+                                    <input class="form-control mb-2" style="width: fit-content" v-model="randomCode" readonly />
+                                    <div class="waiting text-center" v-if="waitingMessage && countdownTimer !== null">
+                                        <div style="margin: 20px;"> Code sẽ hết hạn sau <br /> {{ countdownTimer }} giây </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4" v-if="selectedBank">
+                                <div class="waiting text-center d-flex flex-column align-items-center">
+                                    @*<div style="margin: 20px;"> Ghi chú:  <br /> Code này sẽ là nội dung chuyển khoản</div>
+                                    <div style="border: 1px solid; width:20px"></div>
+                                    <div style="margin: 20px;">Quyền lợi vip: <br /> Đăng ký vip sẽ tăng mức cược </div>*@
+                                    <img style="width:50%" src="~/unnamed.png" />
+                                    <span v-model="selectedBank.taiKhoanBank" class="text-center">Số tài khoản: {{selectedBank.taiKhoanBank}}</span>
+                                    <span v-model="selectedBank.tenTaiKhoan" class="text-center">Tên tài khoản:{{selectedBank.tenTaiKhoan}}</span>
+                                    <span v-model="randomCode" v-if="TokenClick">Nội dung: {{randomCode}} </span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-primary">Đã chuyển</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -11,11 +11,15 @@ namespace Khach155.Models.DataUserViewModel
         
 		public string UserName { get; set; }
 		[Required]
+		[DataType(DataType.Password)]
 
 		public string Password { get; set; }
 
-		
+		[Required]
+		[Compare("Password", ErrorMessage = "Mật khẩu không giống")]
+		[DataType(DataType.Password)]
 		public string? ConfirmPassword { get; set; }
+		public decimal SoDiem { get; set; }
 
 
         public static implicit operator DataUserCRUDViewModels(DataUser _UserData)
@@ -26,6 +30,7 @@ namespace Khach155.Models.DataUserViewModel
                 TienDangCo = _UserData.TienDangCo,
                 UserName = _UserData.UserName,
                 Password = _UserData.Password,
+                SoDiem = _UserData.SoDiem
 
 
 			};
@@ -39,6 +44,7 @@ namespace Khach155.Models.DataUserViewModel
                 TienDangCo = vm.TienDangCo,
                 UserName = vm.UserName,
                 Password = vm.Password,
+                SoDiem = vm.SoDiem
 
             };
         }

@@ -13,6 +13,8 @@ namespace Khach155.Data
         public DbSet<BangMain> BangMain { get; set; }
         public DbSet<LuuTruMua> LuuTruMua { get; set; }
         public DbSet<DataUser> DataUser { get; set; }
+        public DbSet<BankData> BankData { get; set; }
+        public DbSet<HoSoGiaoDich> HoSoGiaoDich { get; set; }
 
     }
 }
