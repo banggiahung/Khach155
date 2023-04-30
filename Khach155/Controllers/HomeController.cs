@@ -162,7 +162,7 @@ namespace Khach155.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> MuaFb([FromForm] BangMainCRUDViewModels data)
-        {
+        { 
             try
             {
                 int? userId = HttpContext.Session.GetInt32("Id");
