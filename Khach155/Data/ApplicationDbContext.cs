@@ -15,6 +15,8 @@ namespace Khach155.Data
         public DbSet<DataUser> DataUser { get; set; }
         public DbSet<BankData> BankData { get; set; }
         public DbSet<HoSoGiaoDich> HoSoGiaoDich { get; set; }
+        public DbSet<LuuTruBan> LuuTruBan { get; set; }
+
 
     }
 }

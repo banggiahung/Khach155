@@ -40,7 +40,7 @@ namespace Khach155.Controllers
         public IActionResult GetDataBangMain()
         {
             var a = _context.BangMain
-                .Where(x=>x.SoLuongTaiKhoan > 0)
+                .Where(x => x.SoLuongTaiKhoan > 0)
                 .ToList();
             return Ok(a);
         }
@@ -165,43 +165,43 @@ namespace Khach155.Controllers
         {
             try
             {
-				//int? userId = HttpContext.Session.GetInt32("Id");
-				int? userId = 1;
-                
+                int? userId = HttpContext.Session.GetInt32("Id");
 
-				DataUser userData = await _context.DataUser.FindAsync(userId);
-                if (userData == null || data.Id < 0 )
+
+                DataUser userData = await _context.DataUser.FindAsync(userId);
+                if (userData == null || data.Id < 0)
                 {
                     return NotFound("Invalid user or data");
                 }
-                
 
-				BangMain main = await _context.BangMain.FindAsync(data.Id);
+
+                BangMain main = await _context.BangMain.FindAsync(data.Id);
                 if (main == null)
                 {
                     return NotFound("Invalid main");
                 }
-				else if (main.UserId == userId)
-				{
-					return NotFound("Không được mua của chính mình");
+                else if (main.UserId == userId)
+                {
+                    return NotFound("Không được mua của chính mình");
 
-				}
-				LuuTruMua luuMain = new();
+                }
+                LuuTruMua luuMain = new();
                 luuMain.UserId = userId;
                 luuMain.GiaMua = main.GiaCa;
                 luuMain.MuonBan = false;
                 luuMain.MuaCuaAi = main.NguoiBan;
-                luuMain.SoLuongMua = data.SoLuongUserMua;
-                 
+                luuMain.SoLuongMua = (decimal)data.SoLuongUserMua;
+                luuMain.SoTienThanhToan = (decimal)data.SoTienThanhToan;
+
                 _context.Add(luuMain);
                 await _context.SaveChangesAsync();
 
-                main.SoLuongTaiKhoan = main.SoLuongTaiKhoan - data.SoLuongUserMua;
+                main.SoLuongTaiKhoan = main.SoLuongTaiKhoan - (decimal)data.SoLuongUserMua;
                 main.Cancel = false;
                 _context.Update(main);
                 await _context.SaveChangesAsync();
-               
-                userData.TienDangCo = userData.TienDangCo - luuMain.GiaMua;
+
+                userData.TienDangCo = userData.TienDangCo - luuMain.SoTienThanhToan;
                 userData.SoDiem = userData.SoDiem + luuMain.SoLuongMua;
                 _context.Update(userData);
                 await _context.SaveChangesAsync();
@@ -250,7 +250,8 @@ namespace Khach155.Controllers
                     select new DataUserCRUDViewModels
                     {
                         Id = userId,
-                        TienDangCo = _user.TienDangCo
+                        TienDangCo = _user.TienDangCo,
+                        SoDiem = _user.SoDiem,
                     };
             return Ok(a);
         }
@@ -288,46 +289,51 @@ namespace Khach155.Controllers
         // post vào bảng chính để đăng mua
 
         [HttpPost]
-        public async Task<IActionResult> BanFb([FromForm] LuuTruMuaCRUDViewModels data)
+        public async Task<IActionResult> BanFb([FromForm] BangMainCRUDViewModels data)
         {
             try
             {
                 int? userId = HttpContext.Session.GetInt32("Id");
+
+
                 DataUser userData = await _context.DataUser.FindAsync(userId);
                 if (userData == null || data.Id < 0)
                 {
                     return NotFound("Invalid user or data");
                 }
 
-                LuuTruMua main = await _context.LuuTruMua.FindAsync(data.Id);
+
+                BangMain main = await _context.BangMain.FindAsync(data.Id);
                 if (main == null)
                 {
                     return NotFound("Invalid main");
                 }
+                else if (main.UserId == userId)
+                {
+                    return NotFound("Không được mua của chính mình");
 
-                BangMain pushMain = new();
-                pushMain.NguoiBan = userData.UserName;
-                pushMain.GiaCa = data.GiaMua;
-                pushMain.UserId = userId;
-                pushMain.Cancel = false;
-               
+                }
 
-                _context.Add(pushMain);
+                LuuTruBan luuBan = new();
+                luuBan.UserId = userId;
+                luuBan.GiaBan = main.GiaCa;
+                luuBan.BanChoAi = main.NguoiBan;
+                luuBan.SoLuongBan = (decimal)data.SoLuongUserBan;
+                luuBan.SoTienThanhToanBan = (decimal)data.SoTienThanhToanBanUser;
+
+                _context.Add(luuBan);
                 await _context.SaveChangesAsync();
 
-                main.MuonBan = true;
+                main.SoLuongTaiKhoan = main.SoLuongTaiKhoan + (decimal)data.SoLuongUserBan;
+                main.Cancel = false;
                 _context.Update(main);
                 await _context.SaveChangesAsync();
 
-                if (main.MuonBan == true)
-                {
-                    _context.LuuTruMua.Remove(main);
-                    await _context.SaveChangesAsync();
-                }
-                else
-                {
-                    return NotFound("Main is not cancelled");
-                }
+                userData.TienDangCo = userData.TienDangCo + luuBan.SoTienThanhToanBan;
+                userData.SoDiem = userData.SoDiem - luuBan.SoLuongBan;
+                _context.Update(userData);
+                await _context.SaveChangesAsync();
+
             }
             catch (Exception ex)
             {

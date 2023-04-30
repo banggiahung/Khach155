@@ -3,8 +3,69 @@
     ViewData["Title"] = "Home Page";
 }
 <div id="Vue_BangMain">
+   
+    <!-- Button trigger modal -->
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Mua tài khoản</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <label>Tên mua</label>
+                        <input type="text" readonly id="nguoiBan" v-model="nguoiBan"/>
+                        <label for="quantity">Số lượng:</label>
+                        <input type="number" id="quantity" v-model="quantity">
+                        <label for="price">Giá:</label>
+                        <input type="hidden" id="GiaCa" v-model="GiaCa" readonly>
+                        <input type="text" id="formattedGiaCa" v-model="formattedGiaCa" readonly>
+                        <p>Tổng tiền: {{ formattedTotal }}</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" v-on:click="getItem">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="BanModal" tabindex="-1" aria-labelledby="BanModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="BanModalLabel">Bán tài khoản</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <label>Tên mua</label>
+                        <input type="text" readonly id="nguoiBan" v-model="nguoiBan" />
+                        <label for="quantity">Số lượng:</label>
+                        <input type="number" id="quantity" v-model="quantity">
+                        <label for="price">Giá:</label>
+                        <input type="hidden" id="GiaCa" v-model="GiaCa" readonly>
+                        <input type="text" id="formattedGiaCa" v-model="formattedGiaCa" readonly>
+                        <p>Tổng tiền: {{ formattedTotal }}</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" v-on:click="getItemBan">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <span>
         Tiền đang có:{{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(tienDangCo) }}
+    </span>
+    <span>
+        Điểm đang có:{{ SoDiemCo }} điểm
     </span>
     <button data-bs-toggle="modal" data-bs-target="#staticBackdrop1" type="button" class="btn btn-primary">Nạp tiền</button>
 
@@ -14,6 +75,7 @@
                 <th>Id</th>
                 <th>Tên người bán</th>
                 <th>Giá bán</th>
+                <th></th>
                 <th></th>
             </tr>
         </thead>
@@ -25,7 +87,11 @@
                     {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.giaCa) }}
                 </td>
                 <td>
-                    <button class="btn-success" v-on:click="getItem(item.id)">Mua</button>
+                    <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" v-on:click=" getIdBang(item.id)">Mua</button>
+
+                </td>
+                <td>
+                    <button class=" btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#BanModal" v-on:click=" getIdBang(item.id)">Bán</button>
 
                 </td>
                 </tr>

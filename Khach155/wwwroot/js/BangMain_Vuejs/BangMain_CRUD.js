@@ -13,7 +13,12 @@
         buttonDisabled: false,
         waitingMessage: false,
         soTienNap: "",
-        TokenClick: false
+        TokenClick: false,
+        nguoiBan: null,
+        quantity: 0,
+        price: 0,
+        total: 0,
+        SoDiemCo: null
 
 
 
@@ -288,8 +293,27 @@
         this.getDataUserId();
         this.getDataBank();
 
+
+    },
+    computed: {
+        // Tính toán giá trị tổng dựa trên số lượng và giá
+        formattedGiaCa() {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(this.GiaCa);
+        },
+        formattedTotal() {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(this.total);
+        }
+    },
+    watch: {
+        quantity: function () {
+            this.calculateTotal();
+        },
+
     },
     methods: {
+        calculateTotal() {
+            this.total = this.quantity * this.GiaCa;
+        },
         generateRandomCode() {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let result = '';
@@ -320,14 +344,17 @@
                 }
             }, 1000);
         },
-        getItem(id) {
+
+        getIdBang(id) {
             axios.get(`/Home/muaFb/${id}`)
                 .then((response) => {
+
                     // Xử lý dữ liệu trả về từ API
                     console.log(response)
                     this.idItems = response.data.id;
                     this.GiaCa = response.data.giaCa;
-                    console.log(this.idItems);
+                    this.nguoiBan = response.data.nguoiBan;
+                    //this.price = this.GiaCa * this.quantity;
                     curentThis = this;
                     if (curentThis.tienDangCo < curentThis.GiaCa) {
                         Swal.fire({
@@ -337,45 +364,117 @@
                         });
                         return;
                     }
-                    const formData = new FormData();
-                    if (curentThis.idItems != null) {
-                        formData.append('Id', curentThis.idItems);
-                        formData.append('GiaCa', curentThis.GiaCa);
 
-                    }
-                    axios.post('/Home/muaFb', formData, {
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        }
-                    }).then(response => {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Thành công',
-                            text: 'Đã gửi thành công',
-                            confirmButtonText: 'OK',
-
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.reload();
-                            }
-                        });
-                    }).catch((error) => {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Lỗi',
-                            text: 'Đã có lỗi xảy ra vui lòng thử lại',
-                            confirmButtonText: 'OK'
-                        });
-                        console.error(error);
+                }).catch((error) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Đã có lỗi xảy ra vui lòng thử lại',
+                        confirmButtonText: 'OK'
                     });
+                })
+
+        },
+
+        getItem() {
+            curentThis = this;
+            if (curentThis.tienDangCo < curentThis.total) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Số tiền bạn đang có không đủ để mua!'
                 });
-                
-            
+                return;
+            }
+            const formData = new FormData();
+            if (curentThis.idItems != null) {
+                formData.append('Id', curentThis.idItems);
+                formData.append('GiaCa', curentThis.GiaCa);
+                formData.append('SoLuongUserMua', curentThis.quantity);
+                formData.append('SoTienThanhToan', curentThis.total)
+
+            }
+
+            axios.post('/Home/muaFb', formData, {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }).then(response => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công',
+                    text: 'Đã gửi thành công',
+                    confirmButtonText: 'OK',
+
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                });
+            }).catch((error) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Đã có lỗi xảy ra vui lòng thử lại',
+                    confirmButtonText: 'OK'
+                });
+                console.error(error);
+            });
+
+
+        },
+        getItemBan() {
+            curentThis = this;
+            if (curentThis.SoDiemCo < 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Số điểm bạn đang có không đủ để bán!'
+                });
+                return;
+            }
+            const formData = new FormData();
+            if (curentThis.idItems != null) {
+                formData.append('Id', curentThis.idItems);
+                formData.append('GiaCa', curentThis.GiaCa);
+                formData.append('SoLuongUserBan', curentThis.quantity);
+                formData.append('SoTienThanhToanBanUser', curentThis.total)
+
+            }
+
+            axios.post('/Home/BanFb', formData, {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }).then(response => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công',
+                    text: 'Đã gửi thành công',
+                    confirmButtonText: 'OK',
+
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                });
+            }).catch((error) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Đã có lỗi xảy ra vui lòng thử lại',
+                    confirmButtonText: 'OK'
+                });
+                console.error(error);
+            });
+
+
         },
         getDataUserId() {
             axios.get("/Home/GetDataProfileMainTien")
                 .then((response) => {
                     this.tienDangCo = response.data[0].tienDangCo;
+                    this.SoDiemCo = response.data[0].soDiem;
                     return Promise.resolve();
                 })
         },
