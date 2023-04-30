@@ -1,4 +1,5 @@
 ﻿using Khach155.Data;
+using Khach155.Hubs;
 using Khach155.Models;
 using Khach155.Models.BangMainViewModel;
 using Khach155.Models.DataUserViewModel;
@@ -66,7 +67,7 @@ namespace Khach155.Controllers
             {
                 // Đăng nhập thành công
                 HttpContext.Session.SetInt32("Id", user.Id ?? 0);
-                //HttpContext.Session.SetString("UserRole", user.Role);
+                HttpContext.Session.SetString("UserName", user.UserName);
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -107,11 +108,23 @@ namespace Khach155.Controllers
                 model.TienDangCo = 0;
                 model.SoDiem = 0;
 
-                _context.DataUser.Add(model);
+                DataUser user = new();
+                user = model;
+                _context.Add(user);
                 await _context.SaveChangesAsync();
 
                 // Đăng nhập người dùng mới và chuyển hướng đến trang chủ
                 //HttpContext.Session.SetInt32("Id", model.Id ?? 0);
+
+                //Tạo room chat với user
+                Room room = new Room();
+                room.Name = model.UserName;
+                room.UserCreate = user.Id ?? 0;
+                await _context.AddAsync(room);
+                await _context.SaveChangesAsync();
+
+
+
                 return RedirectToAction("Login", "Home");
             }
 
@@ -162,7 +175,7 @@ namespace Khach155.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> MuaFb([FromForm] BangMainCRUDViewModels data)
-        { 
+        {
             try
             {
                 int? userId = HttpContext.Session.GetInt32("Id");
@@ -352,6 +365,11 @@ namespace Khach155.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult Chat()
+        {
+            return View();
         }
     }
 }

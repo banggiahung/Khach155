@@ -41,5 +41,10 @@ namespace Khach155.Areas.Admin.Controllers
 
         }
 
+        public IActionResult ChatAdminView()
+        {
+            return View();
+        }
+
     }
 }

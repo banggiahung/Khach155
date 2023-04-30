@@ -2,22 +2,25 @@ using Khach155.Data;
 using Microsoft.EntityFrameworkCore;
 using Khach155.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Khach155.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
+builder.Services.AddRazorPages();
 builder.Services.AddTransient<ICommon, Common>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-	.AddCookie(options =>
-	{
-		options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-		options.SlidingExpiration = true;
-		options.AccessDeniedPath = "/Forbidden/";
-		options.LoginPath = "/Home/Login";
-		options.AccessDeniedPath = "/Home/AccessDenied";
-		options.SlidingExpiration = true;
-	});
+    .AddCookie(options =>
+    {
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        options.SlidingExpiration = true;
+        options.AccessDeniedPath = "/Forbidden/";
+        options.LoginPath = "/Home/Login";
+        options.AccessDeniedPath = "/Home/AccessDenied";
+        options.SlidingExpiration = true;
+    });
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -26,14 +29,15 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddSession(options =>
 {
-	options.IdleTimeout = TimeSpan.FromMinutes(30);
-	options.Cookie.HttpOnly = true;
-	options.Cookie.IsEssential = true;
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidCastException(nameof(args));
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(connectionString));
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -52,6 +56,13 @@ app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<SignalRReconnectMiddleware>();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapRazorPages();
+    endpoints.MapHub<ChatHub>("/chatHub");
+});
 
 app.MapControllerRoute(
     name: "default",
