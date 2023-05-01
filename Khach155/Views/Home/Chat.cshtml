@@ -1,4 +1,4 @@
-﻿@*@using Microsoft.AspNetCore.Http
+﻿@using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
 
 
@@ -7,14 +7,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     HttpContext httpContext = HttpContextAccessor.HttpContext;
     string userName = httpContext.Session.GetString("UserName");
-}*@
+}
 
 <h1>Chat</h1>
 
 <div class="container">
     <div class="row p-1">
         <div class="col-1">User</div>
-        <div class="col-5"><input type="text" id="userInput" /></div>
+        <div class="col-5"><input type="text" id="userInput" readonly value="@userName" /></div>
     </div>
     <div class="row p-1">
         <div class="col-1">Message</div>
@@ -47,7 +47,9 @@
     connection.start().then(function () {
         document.getElementById("sendButton").disabled = false;
         // lấy lịch sử chát với người dùng
-        connection.invoke("HistoryChat", "doanhuyxh2@gmail.com").catch(function (err) {
+        let user = `@Html.Raw(userName)`;
+
+        connection.invoke("HistoryChat", user).catch(function (err) {
             console.error(err.toString());
         });
     }).catch(function (err) {
@@ -55,40 +57,36 @@
     });
 
     connection.on("ReceiveMessage", function (user, message) {
-        var li = document.createElement("li");
-        document.getElementById("messagesList").appendChild(li);
-        user = "doanhuyxh2@gmail.com";
-        // We can assign user-supplied strings to an element's textContent because it
-        // is not interpreted as markup. If you're assigning in any other way, you
-        // should be aware of possible script injection concerns.
-        li.textContent = `${user} says ${message}`;
+        if (user == `@Html.Raw(userName)`) {
+            var li = document.createElement("li");
+            document.getElementById("messagesList").appendChild(li);
+            li.textContent = `${user} says ${message}`;
+        }
     });
 
     connection.on("ReceiveMessageAdmin", function (user, message) {
         var li = document.createElement("li");
         document.getElementById("messagesList").appendChild(li);
-        // We can assign user-supplied strings to an element's textContent because it
-        // is not interpreted as markup. If you're assigning in any other way, you
-        // should be aware of possible script injection concerns.
         li.style.color = "red";
         li.textContent = `${user} says ${message}`;
     });
 
-    connection.on("ReceiveMessageHistory", function (history) {
-        history.forEach(item => {
-            var li = document.createElement("li");
-            document.getElementById("messagesList").appendChild(li);
-            if (item.fromUser == 9) {
-                li.style.color = 'red';
+    connection.on("ReceiveMessageHistory", function (user, history) {
+        if (user == `@Html.Raw(userName)`) {
+            history.forEach(item => {
+                var li = document.createElement("li");
+                document.getElementById("messagesList").appendChild(li);
+                if (item.fromUser == 9) {
+                    li.style.color = 'red';
+                    li.textContent = `${item.content}`;
+                }
                 li.textContent = `${item.content}`;
-            }
-            li.textContent = `${item.content}`;
-        })
-
+            })
+        }
     });
 
     document.getElementById("sendButton").addEventListener("click", function (event) {
-        var user = "doanhuyxh2@gmail.com" //document.getElementById("userInput").value;
+        var user = `@Html.Raw(userName)`;
         var message = document.getElementById("messageInput").value;
         connection.invoke("SendMessage", user, message).catch(function (err) {
             return console.error(err.toString());

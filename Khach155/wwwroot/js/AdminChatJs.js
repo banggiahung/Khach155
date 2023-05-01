@@ -16,13 +16,30 @@ connection.start().then(function () {
 //in lịch sử
 connection.on("ReceiveMessageHistoryAdmin", function (history) {
     console.log(history)
+    history.forEach(item => {
+        let parrentDiv = document.createElement("div");
+        parrentDiv.classList.add("col-2");
+        parrentDiv.style.paddingRight = 20;
+        let ul = document.createElement("ul");
+        item.forEach(item2 => {
+            let li = document.createElement("li");
+            ul.appendChild(li);
+            li.style.color = 'blue';
+            if (item2.fromUser == 9) {
+                li.style.color = 'red';
+                li.style.textAlign = 'right'
+            }
+            li.textContent = `${item2.fromUser} says ${item2.content}`;
+        })
+        parrentDiv.appendChild(ul);
+        document.getElementById("container2").appendChild(parrentDiv);
+    })
 });
 // lấy lịch sử chát với người dùng
 
 connection.on("ReceiveMessage", function (user, message) {
     var li = document.createElement("li");
     document.getElementById("messagesList").appendChild(li);
-    user = "doanhuyxh2@gmail.com";
     li.style.color = 'blue';
     li.textContent = `${user} says ${message}`;
 });

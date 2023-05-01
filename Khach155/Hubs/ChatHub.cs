@@ -40,14 +40,13 @@ namespace Khach155.Hubs
 
         public async Task HistoryChat(string user)
         {
-            var history = await _context.Message.ToListAsync();
-            await Clients.All.SendAsync("ReceiveMessageHistory", history);
+            int roomcreateId = _context.DataUser.FirstOrDefault(x=>x.UserName.Contains(user))!.Id??0;
+            var history = await _context.Message.Where(x=>x.ToRoomId == roomcreateId).ToListAsync();
+            await Clients.All.SendAsync("ReceiveMessageHistory", user, history);
         }
 
 
-
-
-
+        //phần của admin
         public async Task SendMessageAdmin(string user_nguoiDung, string mesage)
         {
             int userId = _context.DataUser.FirstOrDefault(x => x.UserName == user_nguoiDung)!.Id ?? 0;
@@ -59,7 +58,7 @@ namespace Khach155.Hubs
             messages.FromUser = 9;
             await _context.AddAsync(messages);
             await _context.SaveChangesAsync();
-            await Clients.All.SendAsync("ReceiveMessageAdmin", 9, mesage);
+            await Clients.All.SendAsync("ReceiveMessageAdmin", user_nguoiDung, mesage);
         }
 
         public async Task HistoryChatAdmin()
