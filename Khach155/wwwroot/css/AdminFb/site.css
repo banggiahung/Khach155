@@ -51,9 +51,9 @@ body {
 
 .chat-btn {
     cursor: pointer;
-    float: right;
-    margin-right: 20px;
-    margin-bottom: 20px; 
+    position: absolute;
+    right: 20px;
+    bottom: 70px;
 }
 
     .chat-btn .close {
@@ -99,7 +99,7 @@ body {
 .wrapper {
     position: absolute;
     right: 20px;
-    bottom: 310px;
+    bottom: 130px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     width: 300px;
     background-color: #fff;
@@ -150,4 +150,12 @@ body {
 
 #check {
     display: none !important;
+}
+
+#btn-mua, #btn-ban {
+    cursor: pointer;
+}
+
+#table-ban {
+    display: none;
 }

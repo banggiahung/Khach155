@@ -1,8 +1,113 @@
 ﻿@{
 
 }
-<h1>Day la admin</h1>
-<div id="Admin_fb">
-    <button class="btn btn-success" v-on:click="AddNewItems">Thêm mới sản phẩm</button>
+<div class="container">
+    <h1>Đây là admin</h1>
+    <div id="Admin_fb" class="mb-2">
+        <button class="btn btn-success" v-on:click="AddNewItems">Thêm mới sản phẩm</button>
+    </div>
+    <div class="float-end">
+        <span id="btn-mua" class="me-3">Mua</span>
+        <span id="btn-ban" class="">Bán</span>
+    </div>
+    <div id="table-mua">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Mua</th>
+                    <th scope="col">First</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Handle</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>mdo</td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                    <td>fat</td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td colspan="2">Larry the Bird</td>
+                    <td>twitter</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="table-ban">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Bán</th>
+                    <th scope="col">First</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Handle</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>mdo</td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                    <td>fat</td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td colspan="2">Larry the Bird</td>
+                    <td>twitter</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<div>
+    <input type="checkbox"
+           id="check" />
+    <label class="chat-btn"
+           for="check">
+        <i class="fa-regular fa-comment-dots comment"></i>
+        <i class="fa-solid fa-xmark close"></i>
+    </label>
+    <form class="wrapper">
+        <div class="header"><h6>Let's Chat - Online</h6></div>
+        <div class="text-center p-2"><span>Vui lòng điền đầy đủ thông tin!</span></div>
+        <div class="chat-form">
+            <input type="text"
+                   class="form-control"
+                   placeholder="Tên" />
+            <input type="text"
+                   class="form-control"
+                   placeholder="Email" />
+            <textarea class="form-control"
+                      placeholder="Tin nhắn"></textarea>
+            <input type="submit" class="btn btn-success float-end mb-2 mt-2">
+        </div>
+    </form>
+</div>
+
+<script>
+    $("#btn-mua").on("click", function () {
+        $("#table-mua").css("display", "block");
+        $("#table-ban").css("display", "none");
+    });
+    $("#btn-ban").on("click", function () {
+        $("#table-mua").css("display", "none");
+        $("#table-ban").css("display", "block");
+    });
+</script>
 <script src="~/js/adminfb_vuejs/adminfb_crud.js"></script>
