@@ -41,6 +41,5 @@ namespace Khach155.Areas.Admin.Controllers
             }
             return Ok(model);
         }
-
     }
 }
