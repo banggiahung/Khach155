@@ -1,14 +1,16 @@
 ﻿@{
 
 }
+
 <div class="container">
     <h1>Đây là admin</h1>
     <div id="Admin_fb" class="mb-2">
         <button class="btn btn-success" v-on:click="AddNewItems">Thêm mới sản phẩm</button>
     </div>
+
     <div class="float-end">
-        <span id="btn-mua" class="me-3">Mua</span>
-        <span id="btn-ban" class="">Bán</span>
+        <span id="btn-mua" class="active me-2">Mua</span> | 
+        <span id="btn-ban" class="ms-2">Bán</span>
     </div>
 
     <div id="table-mua">
@@ -105,10 +107,17 @@
     $("#btn-mua").on("click", function () {
         $("#table-mua").css("display", "block");
         $("#table-ban").css("display", "none");
+        $("#btn-mua").addClass("active");
+        $("#btn-ban").removeClass("active");
     });
+
     $("#btn-ban").on("click", function () {
         $("#table-mua").css("display", "none");
         $("#table-ban").css("display", "block");
+        $("#btn-ban").addClass("active");
+        $("#btn-mua").removeClass(" active");
     });
+
 </script>
+
 <script src="~/js/adminfb_vuejs/adminfb_crud.js"></script>

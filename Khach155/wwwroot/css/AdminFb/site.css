@@ -152,8 +152,20 @@ body {
     display: none !important;
 }
 
-#btn-mua, #btn-ban {
+#btn-mua,
+#btn-ban {
     cursor: pointer;
+    font-size: 18px;
+}
+
+.active {
+    text-decoration: underline;
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    color: #333;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 #table-ban {
