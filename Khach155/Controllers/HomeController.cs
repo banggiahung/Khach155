@@ -180,11 +180,7 @@ namespace Khach155.Controllers
                 {
                     return NotFound("Invalid main");
                 }
-                else if (main.UserId == userId)
-                {
-                    return NotFound("Không được mua của chính mình");
-
-                }
+               
                 LuuTruMua luuMain = new();
                 luuMain.UserId = userId;
                 luuMain.GiaMua = main.GiaCa;
@@ -308,11 +304,7 @@ namespace Khach155.Controllers
                 {
                     return NotFound("Invalid main");
                 }
-                else if (main.UserId == userId)
-                {
-                    return NotFound("Không được mua của chính mình");
-
-                }
+                
 
                 LuuTruBan luuBan = new();
                 luuBan.UserId = userId;

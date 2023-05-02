@@ -3,8 +3,23 @@
     data: {
         NguoiBan: null,
         GiaCa: null,
+        allMua: "",
+        allBan:"",
 
     },
+    mounted() {
+        axios.get("/AdminFb/GetDataMua")
+            .then((response) => {
+                this.allMua = response.data;
+                return Promise.resolve();
+            });
+        axios.get("/AdminFb/GetDataBan")
+            .then((response) => {
+                this.allBan = response.data;
+                return Promise.resolve();
+            });
+    },
+   
     methods: {
 
         async AddNewItems() {

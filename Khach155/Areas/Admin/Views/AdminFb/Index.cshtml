@@ -6,5 +6,59 @@
 <h1>Daay la admin</h1>
 <div id="Admin_fb">
     <button class="btn btn-success" v-on:click="AddNewItems">Thêm mới sản phẩm</button>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Tên người dùng</th>
+                <th>Giá đã mua</th>
+                <th>Tên đã mua</th>
+                <th>Số lượng mua</th>
+                <th>Tiền đã thanh toán</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="items in allMua">
+                <td>{{items.tenUser}}</td>
+                <td>
+                    {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(items.giaMua) }}
+
+                </td>
+                <td>{{items.muaCuaAi}}</td>
+                <td>{{items.soLuongMua}}</td>
+                <td>
+                    {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(items.soTienThanhToan) }}
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Tên người dùng</th>
+                <th>Giá đã bán</th>
+                <th>Tên đã bán</th>
+                <th>Số lượng bán</th>
+                <th>Tiền đã thanh toán</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="items in allBan">
+                <td>{{items.tenUser}}</td>
+                <td>
+                    {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(items.giaMua) }}
+
+                </td>
+                <td>{{items.muaCuaAi}}</td>
+                <td>{{items.soLuongMua}}</td>
+                <td>
+                    {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(items.soTienThanhToan) }}
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 <script src="~/js/adminfb_vuejs/adminfb_crud.js"></script>

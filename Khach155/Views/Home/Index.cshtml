@@ -28,8 +28,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" v-on:click="getItem">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" v-on:click="getItem">Xác nhận mua</button>
                 </div>
             </div>
         </div>
@@ -55,8 +55,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" v-on:click="getItemBan">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" v-on:click="getItemBan">Xác nhận bán</button>
                 </div>
             </div>
         </div>
@@ -91,7 +91,7 @@
 
                 </td>
                 <td>
-                    <button class=" btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#BanModal" v-on:click=" getIdBang(item.id)">Bán</button>
+                    <button class=" btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#BanModal" v-on:click=" getIdBangBan(item.id)">Bán</button>
 
                 </td>
                 </tr>

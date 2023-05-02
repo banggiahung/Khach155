@@ -1,6 +1,7 @@
 ﻿using Khach155.Data;
 using Khach155.Models;
 using Khach155.Models.BangMainViewModel;
+using Khach155.Models.LuuTruMuaViewModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Khach155.Areas.Admin.Controllers
@@ -39,6 +40,42 @@ namespace Khach155.Areas.Admin.Controllers
             }
             return Ok(model);
 
+        }
+        [HttpGet]
+        public IActionResult GetDataMua()
+        {
+			var a = from obj in _context.LuuTruMua
+					join _user in _context.DataUser on obj.UserId equals _user.Id
+					where obj.MuonBan == false
+					select new LuuTruMuaCRUDViewModels
+					{
+						Id = obj.Id,
+						UserId = _user.Id,
+						GiaMua = obj.GiaMua,
+						MuonBan = obj.MuonBan,
+						MuaCuaAi = obj.MuaCuaAi,
+						TenUser = _user.UserName,
+                        SoLuongMua = obj.SoLuongMua,
+                        SoTienThanhToan = obj.SoTienThanhToan
+					};
+			return Ok(a.ToList());
+		}
+        [HttpGet]
+        public IActionResult GetDataBan()
+        {
+            var a = from obj in _context.LuuTruBan
+                    join _user in _context.DataUser on obj.UserId equals _user.Id
+                    select new LuuTruMuaCRUDViewModels
+                    {
+                        Id = obj.Id,
+                        UserId = _user.Id,
+                        GiaMua = obj.GiaBan,
+                        MuaCuaAi = obj.BanChoAi,
+                        TenUser = _user.UserName,
+                        SoLuongMua = obj.SoLuongBan,
+                        SoTienThanhToan = obj.SoTienThanhToanBan
+                    };
+            return Ok(a.ToList());
         }
 
     }

@@ -375,6 +375,28 @@
                 })
 
         },
+        getIdBangBan(id) {
+            axios.get(`/Home/muaFb/${id}`)
+                .then((response) => {
+
+                    // Xử lý dữ liệu trả về từ API
+                    console.log(response)
+                    this.idItems = response.data.id;
+                    this.GiaCa = response.data.giaCa;
+                    this.nguoiBan = response.data.nguoiBan;
+                    //this.price = this.GiaCa * this.quantity;
+                   
+
+                }).catch((error) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Đã có lỗi xảy ra vui lòng thử lại',
+                        confirmButtonText: 'OK'
+                    });
+                })
+
+        },
 
         getItem() {
             curentThis = this;
@@ -386,6 +408,7 @@
                 });
                 return;
             }
+          
             const formData = new FormData();
             if (curentThis.idItems != null) {
                 formData.append('Id', curentThis.idItems);
@@ -425,11 +448,19 @@
         },
         getItemBan() {
             curentThis = this;
-            if (curentThis.SoDiemCo < 0) {
+            if (curentThis.SoDiemCo < 0 || curentThis.quantity > curentThis.SoDiemCo) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'Số điểm bạn đang có không đủ để bán!'
+                    text: 'Số điểm bạn đang có không đủ để bán hoặc đang thiếu!'
+                });
+                return;
+            }
+            if (curentThis.total > curentThis.tienDangCo) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Số điểm bạn đang có không đủ để bán hoặc đang thiếu!'
                 });
                 return;
             }
